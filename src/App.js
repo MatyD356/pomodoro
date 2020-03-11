@@ -25,6 +25,7 @@ class App extends React.Component {
   reset = () => {
     clearInterval(this.intervalID)
     this.setState({
+      onGoing: "Session",
       active: false,
       sessionTime: 25,
       breakTime: 5,
@@ -38,30 +39,47 @@ class App extends React.Component {
       this.setState({
         sessionTime: this.state.sessionTime + 1
       }, () => (this.updateTime()))
-    } else if (this.state.sessionTime > 1 && childdata === "session-decrement") {
+    }
+    else if (this.state.sessionTime > 1 && childdata === "session-decrement") {
       this.setState({
         sessionTime: this.state.sessionTime - 1
       }, () => (this.updateTime()))
-    } else if (this.state.breakTime < 60 && childdata === "break-increment") {
+    }
+    else if (this.state.breakTime < 60 && childdata === "break-increment") {
       this.setState({
         breakTime: this.state.breakTime + 1
-      }, () => (this.updateTime()))
-    } else if (this.state.breakTime > 1 && childdata === "break-decrement") {
+      }, () => (this.updateBreakTime()))
+    }
+    else if (this.state.breakTime > 1 && childdata === "break-decrement") {
       this.setState({
         breakTime: this.state.breakTime - 1
-      }, () => (this.updateTime()))
+      }, () => (this.updateBreakTime()))
     }
-    (() => (this.updateTime()))();
   }
+  //updating time
   updateTime = () => {
-    if (this.state.active === false) {
-      this.setState({
-        minutes: this.state.sessionTime
-      })
+    if (this.state.onGoing === "Break") { }
+    else {
+      if (this.state.active === false) {
+        this.setState({
+          minutes: this.state.sessionTime
+        })
+      }
+    }
+  }
+  updateBreakTime = () => {
+    if (this.state.onGoing === "Session") { }
+    else {
+      if (this.state.active === false) {
+        this.setState({
+          minutes: this.state.breakTime
+        })
+      }
     }
   }
   startStop = () => {
-    let inter = () => {
+    //session timing
+    let sesionInter = () => {
       //min tick 
       if (this.state.seconds === 0) {
         this.setState({
@@ -73,15 +91,48 @@ class App extends React.Component {
       this.setState({
         seconds: this.state.seconds - 1
       }, () => {
-        //stoping ticking on 0
-        if (this.state.minutes === 0 && this.state.seconds === 0) {
+        //starting break after session ends
+        if (this.state.minutes === -1 && this.state.seconds === 59) {
           clearInterval(this.intervalID)
+          this.intervalID = setInterval(breakInter, 1000)
+          this.setState({
+            onGoing: "Break",
+            seconds: 0,
+            minutes: this.state.breakTime
+          })
         }
       })
     }
+    //break timing
+    let breakInter = () => {
+      if (this.state.seconds === 0) {
+        //minute tick
+        this.setState({
+          minutes: this.state.minutes - 1,
+          seconds: 60
+        })
+      }
+      //second tick
+      this.setState({
+        seconds: this.state.seconds - 1
+      }, () => {
+        //ending break 
+        if (this.state.minutes === -1 && this.state.seconds === 59) {
+          console.log('end of break')
+          clearInterval(this.intervalID)
+          this.intervalID = setInterval(sesionInter, 10)
+          this.setState({
+            onGoing: "Session",
+            minutes: this.state.sessionTime,
+            seconds: 0
+          })
+        }
+      })
+
+    }
     //ticking ON OFF
     if (this.state.active === false) {
-      this.intervalID = setInterval(inter, 1000)
+      this.intervalID = setInterval(sesionInter, 1000)
       this.setState({
         active: !this.state.active
       }, () => { console.log("ON") });
