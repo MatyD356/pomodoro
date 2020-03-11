@@ -1,6 +1,5 @@
 import React from 'react';
-import '../App.css';
-
+import '../App.scss';
 
 class Config extends React.Component {
     sendClick = (e) => {
@@ -10,28 +9,43 @@ class Config extends React.Component {
         return (
             <div className="Config">
                 <div id="break-label">
-                    Session Duration
-                    <p><span
-                        id="session-increment"
-                        onClick={this.sendClick}>+</span>
-                        <span id="session-length">{this.props.sessionTime}</span>
-                        <span
+                    <h2 className="session-title">Session</h2>
+                    <div className="config-container">
+                        <p
+                            className="plus"
+                            id="session-increment"
+                            onClick={this.sendClick} >
+                            +
+                        </p>
+                        <p id="session-length">{this.props.sessionTime}</p>
+                        <p
+                            className="minus"
                             id="session-decrement"
-                            onClick={this.sendClick}>-</span></p>
+                            onClick={this.sendClick} >
+                            -
+                        </p>
+                    </div>
                 </div>
                 <div id="session-label">
-                    Break Duration
-                    <p><span
-                        id="break-increment"
-                        onClick={this.sendClick}>+</span>
-                        <span id="break-length">{this.props.breakTime}</span>
-                        <span
-                            id="break-decrement"
-                            onClick={this.sendClick}>-</span>
-                    </p>
-                </div>
+                    <h2 className="break-title">Break</h2>
+                    <div className="config-container">
+                        <p
+                            className="plus"
+                            id="break-increment"
+                            onClick={this.sendClick} >
+                            +
+                        </p>
 
-            </div>
+                        <p id="break-length">{this.props.breakTime}</p>
+                        <p
+                            className="minus"
+                            id="break-decrement"
+                            onClick={this.sendClick}>
+                            -
+                        </p>
+                    </div>
+                </div>
+            </div >
         );
     }
 
