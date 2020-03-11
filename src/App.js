@@ -31,7 +31,7 @@ class App extends React.Component {
       breakTime: 5,
       minutes: 25,
       seconds: 0
-    })
+    }, () => { this.stopAudio() })
   }
   //handlig time config
   configTime = (childdata) => {
@@ -56,7 +56,7 @@ class App extends React.Component {
       }, () => (this.updateBreakTime()))
     }
   }
-  //updating time
+  //updating session time
   updateTime = () => {
     if (this.state.onGoing === "Break") { }
     else {
@@ -67,6 +67,7 @@ class App extends React.Component {
       }
     }
   }
+  //updating break time
   updateBreakTime = () => {
     if (this.state.onGoing === "Session") { }
     else {
@@ -77,6 +78,7 @@ class App extends React.Component {
       }
     }
   }
+  //main funckion loopin session and breaks
   startStop = () => {
     //session timing
     let sesionInter = () => {
@@ -85,7 +87,7 @@ class App extends React.Component {
         this.setState({
           minutes: this.state.minutes - 1,
           seconds: 60
-        })
+        }, () => { this.playAudio() })
       }
       //second tick
       this.setState({
@@ -94,6 +96,7 @@ class App extends React.Component {
         //starting break after session ends
         if (this.state.minutes === -1 && this.state.seconds === 59) {
           clearInterval(this.intervalID)
+          this.playAudio()
           this.intervalID = setInterval(breakInter, 1000)
           this.setState({
             onGoing: "Break",
@@ -120,7 +123,7 @@ class App extends React.Component {
         if (this.state.minutes === -1 && this.state.seconds === 59) {
           console.log('end of break')
           clearInterval(this.intervalID)
-          this.intervalID = setInterval(sesionInter, 10)
+          this.intervalID = setInterval(sesionInter, 1000)
           this.setState({
             onGoing: "Session",
             minutes: this.state.sessionTime,
@@ -144,6 +147,19 @@ class App extends React.Component {
       }, () => { console.log("OFF") });
     }
   }
+  // play auido
+  playAudio = () => {
+    let audio = document.getElementById('beep');
+    audio.play();
+  }
+  // stop auido
+  stopAudio = () => {
+    let audio = document.getElementById('beep');
+    if (audio.duration > 0 && !audio.paused) {
+      audio.pause();
+      audio.currentTime = 0;
+    }
+  }
   render() {
     return (
       <div className="App">
@@ -157,6 +173,8 @@ class App extends React.Component {
           startStop={this.startStop}
           min={this.state.minutes}
           sec={this.state.seconds} />
+        <audio id="beep" preload="auto"
+          src="https://goo.gl/65cBl1" />
       </div>
     );
   }
