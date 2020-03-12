@@ -1,6 +1,7 @@
 {
   "name": "pomodoro",
   "version": "0.1.0",
+  "homepage": "https://MatyD356.github.io/pomodoro",
   "private": true,
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.12.1",
@@ -18,6 +19,8 @@
     "react-scripts": "3.4.0"
   },
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

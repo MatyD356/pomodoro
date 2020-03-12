@@ -15,12 +15,6 @@ class App extends React.Component {
     }
   }
   intervalID = 0;
-  componentDidMount() {
-    const script = document.createElement("script");
-    script.async = true;
-    script.src = "https://cdn.freecodecamp.org/testable-projects-fcc/v1/bundle.js";
-    document.body.appendChild(script);
-  }
   //reset to default
   reset = () => {
     clearInterval(this.intervalID)
