@@ -87,7 +87,7 @@ class App extends React.Component {
         this.setState({
           minutes: this.state.minutes - 1,
           seconds: 60
-        }, () => { this.playAudio() })
+        })
       }
       //second tick
       this.setState({
@@ -102,7 +102,7 @@ class App extends React.Component {
             onGoing: "Break",
             seconds: 0,
             minutes: this.state.breakTime
-          })
+          }, () => { this.playAudio() })
         }
       })
     }
